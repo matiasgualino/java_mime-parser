@@ -10,16 +10,20 @@ import java.util.Set;
 
 public class Mail {
 
+	public static final String DIRECTORY_NAME = "mails";
+	
 	// Constante para cada linea. Carriage Return & Linefeed
-	private static final String CR_LF = "\r\n";
+	public static final String CR_LF = "\r\n";
 	private static final String BOUNDARY_TOKEN = "boundary";
 	
-	enum STATES {FROM, DATE, CONTENT_TYPE, DEFAULT}
+	enum STATES {FROM, DATE, SUBJECT, TO, CONTENT_TYPE, DEFAULT}
 	enum CONTENT_TYPES {TEXT, MULTIPART, IMAGE, HTML, NONE}
 	
 	// Constantes utiles para parsear los headers
 	private static final String FROM = "From:";
 	private static final String DATE = "Date: ";
+	private static final String SUBJECT = "Subject:";
+	private static final String TO = "To:";
 	
 	// ContentType section
 	private static final String CONTENTTYPE = "Content-Type: ";
@@ -38,6 +42,10 @@ public class Mail {
 	private String from;
 	// Fecha de envío del mail
 	private String date;
+	// Asunto del mail
+	private String subject;
+	// Quien recibe el mail
+	private String to;
 	// Header del mail
 	private String header;
 	// ContentTypes del mail
@@ -47,9 +55,10 @@ public class Mail {
 	
 	private Set<String> mailBounds = new HashSet<String>();
 	private boolean quotedPrint;
-	private int bodyStartIndex, bodyEndIndex, htmlStartIndex, htmlEndIndex;
+	private int subjectStartIndex, subjectEndIndex;
 	private List<MailImage> mailImages = new ArrayList<MailImage>();
 	
+	private boolean parsingSubject = false;
 	
 	// Cantidad de mails leídos hasta el momento.
 	private static int CANT_MAILS;
@@ -78,15 +87,15 @@ public class Mail {
 	
 	private void createMailFile() throws IOException {
 		// Creo un directorio para los mails
-		this.createDirectoryIfNotExists("mails");
+		this.createDirectoryIfNotExists(DIRECTORY_NAME);
 		// Creo un archivo para el mail. 
-		File mailFile = new File("mails/" + this.number + ".txt");
+		File mailFile = new File(DIRECTORY_NAME + "/" + this.number + ".txt");
 		// Lo elimino por si ya supere la cantidad de mails.
 		mailFile.delete();
 		mailFile.createNewFile();
 		// Cuando ya tengo el archivo creado, tengo un acceso para leerlo y otro para escribirlo.
-		this.mailReader = new RandomAccessFile("mails/" + this.number + ".txt", "r");
-		this.mailWriter = new RandomAccessFile("mails/" + this.number + ".txt", "rw");
+		this.mailReader = new RandomAccessFile(DIRECTORY_NAME + "/" + this.number + ".txt", "r");
+		this.mailWriter = new RandomAccessFile(DIRECTORY_NAME + "/" + this.number + ".txt", "rw");
 	}
 	
 	public void addLine(String line) throws IOException {
@@ -100,6 +109,7 @@ public class Mail {
 		// Datos para la lectura
 		String currentLine;
 		STATES currentState;
+		STATES lastState = STATES.DEFAULT;
 		// Pero si voy a leer uso mailReader
 		while((currentLine = this.mailReader.readLine()) != null) {
 			addHeader(currentLine);
@@ -112,12 +122,23 @@ public class Mail {
 				case DATE:
 					solveDateState(currentLine);
 					break;
+				case SUBJECT:
+					solveSubjectState(currentLine);
+					break;
+				case TO:
+					solveToState(currentLine);
+					break;
 				case CONTENT_TYPE:
 					solveContentTypeState(currentLine);
 					break;
 				default:
+					if (parsingSubject) {
+						subject += currentLine + CR_LF;
+						this.subjectEndIndex = this.linesRead;
+					}
 					break;
 			}
+			lastState = currentState;
 			this.linesRead++;
 		}
 		this.mailReader.close();
@@ -128,6 +149,10 @@ public class Mail {
 			return STATES.FROM;
 		} else if(line.toLowerCase().startsWith(DATE.toLowerCase())) {
 			return STATES.DATE;
+		} else if(line.toLowerCase().startsWith(SUBJECT.toLowerCase())) {
+			return STATES.SUBJECT;
+		} else if(line.toLowerCase().startsWith(TO.toLowerCase())) {
+			return STATES.TO;
 		} else if(line.toLowerCase().startsWith(CONTENTTYPE.toLowerCase())) {
 			return STATES.CONTENT_TYPE;
 		}
@@ -148,17 +173,34 @@ public class Mail {
 	}
 	
 	private void solveFromState(String line) {
+		this.parsingSubject = false;
 		this.from = line.split(FROM)[1];
+	}
+	
+	private void solveToState(String line) {
+		this.parsingSubject = false;
+		this.to = line.split(TO)[1];
+	}
+	
+	private void solveSubjectState(String line) {
+		if (this.subject == null) {
+			this.subject = "";
+			parsingSubject = true;
+			this.subjectStartIndex = this.linesRead;
+		}
+		this.subject += line.split(SUBJECT)[1] + CR_LF;
 	}
 	
 	private void solveDateState(String line) {
 		// Date: Thu, 9 Jun 2016 13:54:30 -0300
 		//  0     1   2  3    4
+		this.parsingSubject = false;
 		String[] dateArray = line.split(" ");
 		this.date = dateArray[2] + "/" + getMonth(dateArray[3]) + "/" + dateArray[4];
 	}
 	
 	private void solveContentTypeState(String line) throws IOException {
+		this.parsingSubject = false;
 		this.contentTypes.add(line.split(CONTENTTYPE)[1]);
 		CONTENT_TYPES currentType = getContentType(line);
 		
@@ -200,16 +242,14 @@ public class Mail {
 	
 	private void solveTextType(String line) throws IOException {
 		consumeHeader(line);
-		bodyStartIndex = ++this.linesRead;
 		readToBoundFound();
-		bodyEndIndex = this.linesRead;
 	}
 	
 	private void solveHTMLType(String line) throws IOException {
 		consumeHeader(line);
-		htmlStartIndex = this.linesRead++;
+		addHeader(line);
+		this.linesRead++;
 		readToBoundFound();
-		htmlEndIndex = this.linesRead;
 	}
 	
 	private void solveImageType() throws IOException {
@@ -227,7 +267,7 @@ public class Mail {
 			line = this.mailReader.readLine();
 		}
 		
-		image.setEndLine(this.linesRead - 1);
+		image.setEndLine(this.linesRead);
 		mailImages.add(image);
 	}
 	
@@ -286,6 +326,9 @@ public class Mail {
 	}
 	
 	private void addHeader(String line) {
+		if (this.header == null) {
+			this.header = "";
+		}
 		this.header += line + CR_LF;
 	}
 	
@@ -343,24 +386,20 @@ public class Mail {
 		return this.from;
 	}
 	
+	public String getSubject() {
+		return subject;
+	}
+	
 	public String getHeader() {
 		return header;
 	}
 	
-	public int getBodyStartIndex() {
-		return bodyStartIndex;
+	public int getSubjectStartIndex() {
+		return subjectStartIndex;
 	}
 	
-	public int getBodyEndIndex() {
-		return bodyEndIndex;
-	}
-	
-	public int getHtmlStartIndex() {
-		return htmlStartIndex;
-	}
-	
-	public int getHtmlEndIndex() {
-		return htmlEndIndex;
+	public int getSubjectEndIndex() {
+		return subjectEndIndex;
 	}
 	
 	public List<MailImage> getMailImages() {
@@ -373,5 +412,13 @@ public class Mail {
 	
 	public int getCurrentSize() {
 		return currentSize;
+	}
+	
+	public int getNumber() {
+		return number;
+	}
+	
+	public String getTo() {
+		return to;
 	}
 }
