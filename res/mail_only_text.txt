@@ -1,0 +1,86 @@
+Delivered-To: matias.gualino@gmail.com
+Received: by 10.200.38.152 with SMTP id 24csp422315qto;
+        Thu, 9 Jun 2016 09:54:30 -0700 (PDT)
+X-Received: by 10.36.116.17 with SMTP id o17mr22706135itc.35.1465491270856;
+        Thu, 09 Jun 2016 09:54:30 -0700 (PDT)
+Return-Path: <euperezautran@gmail.com>
+Received: from mail-io0-x22a.google.com (mail-io0-x22a.google.com. [2607:f8b0:4001:c06::22a])
+        by mx.google.com with ESMTPS id 30si8248701ior.27.2016.06.09.09.54.30
+        for <matias.gualino@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jun 2016 09:54:30 -0700 (PDT)
+Received-SPF: pass (google.com: domain of euperezautran@gmail.com designates 2607:f8b0:4001:c06::22a as permitted sender) client-ip=2607:f8b0:4001:c06::22a;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com;
+       spf=pass (google.com: domain of euperezautran@gmail.com designates 2607:f8b0:4001:c06::22a as permitted sender) smtp.mailfrom=euperezautran@gmail.com;
+       dmarc=pass (p=NONE dis=NONE) header.from=gmail.com
+Received: by mail-io0-x22a.google.com with SMTP id o189so42693135ioe.2
+        for <matias.gualino@gmail.com>; Thu, 09 Jun 2016 09:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=g2IOfLhgOunsiqGoT+Hw5jdi0aDF8wh/nxBS31fOGnY=;
+        b=zQVmetqKWbRqZlDFwVzE/r4eORUF9qQ+DaALm/sg38D4YJDaDaKTl09IrMUDBU+fBE
+         dMz57GujTosUf9Gn+bYf3tX2SM6DDLYNhdMhO9tGWpMyYi7N2PHAIJPpogK9O7WJn4cJ
+         hY59oHAKQO+NIkbh0NxMTjuALsVhts9FkjQDHbOishZVMhOMulJMs6Vou6e3wCRcOHSx
+         /zI6uCwD3pD7Pli5PrJivPMCSuuGkj4ZpvGhFs/2MiECM/Y4tnXWu/aW4UQcLe518luo
+         gt+ySoa9E9+0Ofj8PFXW7r64qbUPA9nWvscIiO/zdR/oPZ/Q68S+b8gJYGOONrJQ9CAF
+         e1tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=g2IOfLhgOunsiqGoT+Hw5jdi0aDF8wh/nxBS31fOGnY=;
+        b=fH+aZ2yH6KsGvKcnrf130d4F8X4OJ16gxNfkSnbu0jfr7gzvx2R9r5jwrBbIeIvRie
+         NAOLEARKBd3GjzOwjyFOA18aHfKK50nt4ook3uU0ZY9llWZ7352NeS0OhHOasx1xoacO
+         wvtY54R+9JKhpcN4CBV0s8+eei22EoeViUVr3lEbAjnaOewZnJ4a1DbCc8PUuOhgY/pK
+         tKi3KAkfyAFElJEY4HexY/QcxLHtEb3KgsvWOdhRFRyKFw61LVM/QdbzS/Cqy4dMJK2q
+         MgXRmkKei7qvCJgLw1q/fGCcTCG6J9yaWQo3kpj8loDRMLJpBDeH7St39cpA3BwOrOco
+         kmhw==
+X-Gm-Message-State: ALyK8tIaRlPFq0WQIMq0BQWxYZaLYfXHveRETx2nsmHpBnOvcsrfK6XFagZdeP5RuH8GAxiNJg61WrBWkJA+Zw==
+X-Received: by 10.107.185.67 with SMTP id j64mr19274640iof.32.1465491270586;
+ Thu, 09 Jun 2016 09:54:30 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.79.108.201 with HTTP; Thu, 9 Jun 2016 09:54:30 -0700 (PDT)
+From: Eugenio Perez <euperezautran@gmail.com>
+Date: Thu, 9 Jun 2016 13:54:30 -0300
+Message-ID: <CALHy9Rwy9bRVkZrU-wSjxNKoPKAPvhYkdxeND-oEY0gVzmf7sg@mail.gmail.com>
+Subject: APP
+To: matias.gualino@gmail.com
+Content-Type: multipart/alternative; boundary=94eb2c06d0c29afa0e0534db4621
+
+--94eb2c06d0c29afa0e0534db4621
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hola Matias como estas??
+Bueno la idea un poco de la app como si fuera un tinder. La idea es unir
+grupos o personas mediante un gps. si no estoy mal serian 5 o 6 ventanas en
+la que tengan un chat tambi=C3=A9n.
+Lo queremos hacer apara android y para apple, el tiempo lo mas r=C3=A1pido
+posible ( ya que nunca estamos seguros de que nadie lo este haciendo) y
+presupuesto manejamos.
+Hoy si queres podes pasarte por el bar y lo hablamos bien, es humberto
+primo 1207 y salta. estoy a partir de las 7 30. Si podes venir en ese
+horario mejor por que estoy mas tranca.
+
+Aguardo tu respuesta
+Saludos!
+
+Eugenio Perez Autran
+
+--94eb2c06d0c29afa0e0534db4621
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hola Matias como estas??<div>Bueno la idea un poco de la a=
+pp como si fuera un tinder. La idea es unir grupos o personas mediante un g=
+ps. si no estoy mal serian 5 o 6 ventanas en la que tengan un chat tambi=C3=
+=A9n.</div><div>Lo queremos hacer apara android y para apple, el tiempo lo =
+mas r=C3=A1pido posible ( ya que nunca estamos seguros de que nadie lo este=
+ haciendo) y presupuesto manejamos.</div><div>Hoy si queres podes pasarte p=
+or el bar y lo hablamos bien, es humberto primo 1207 y salta. estoy a parti=
+r de las 7 30. Si podes venir en ese horario mejor por que estoy mas tranca=
+.</div><div><br></div><div>Aguardo tu respuesta</div><div>Saludos!</div><di=
+v><br></div><div>Eugenio Perez Autran=C2=A0</div></div>
+
+--94eb2c06d0c29afa0e0534db4621--
