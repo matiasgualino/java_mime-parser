@@ -28,6 +28,8 @@ public class LeetTransformer implements Transformer {
 	
 	@Override
 	public void transform(Mail mail) throws FileNotFoundException, IOException {
+		String SUBJECT = "Subject:";
+		
 		transformFile = new File(Mail.DIRECTORY_NAME + "/" + mail.getNumber() + "_transform.txt");
 		transformFile.createNewFile();
 		mailFile = new File(Mail.DIRECTORY_NAME + "/" + mail.getNumber() + ".txt");
@@ -36,6 +38,7 @@ public class LeetTransformer implements Transformer {
 		transformWriter = new RandomAccessFile(transformFile, "rw");
 		
 		String line;
+		String leetLine;
 		int i = 1;
 		transformWriter.write((mailReader.readLine() + Mail.CR_LF).getBytes());
 		
@@ -49,7 +52,15 @@ public class LeetTransformer implements Transformer {
 						finish();
 						return;
 					}
-					transformWriter.write((leet(line) + Mail.CR_LF).getBytes());
+					if (line.contains(SUBJECT)) {
+						leetLine = SUBJECT + " " + leet(line.split(SUBJECT)[1]);
+					} else {
+						leetLine = leet(line);
+					}
+					
+					System.out.println("TRANSFORM: " + leetLine);
+					
+					transformWriter.write((leetLine + Mail.CR_LF).getBytes());
 					i++;
 					line = mailReader.readLine();
 				}

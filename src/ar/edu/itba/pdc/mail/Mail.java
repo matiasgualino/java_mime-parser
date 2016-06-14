@@ -133,8 +133,12 @@ public class Mail {
 					break;
 				default:
 					if (parsingSubject) {
-						subject += currentLine + CR_LF;
-						this.subjectEndIndex = this.linesRead;
+						if (currentLine.startsWith(" ") || currentLine.startsWith("\t")) {
+							subject += currentLine + CR_LF;
+							this.subjectEndIndex = this.linesRead;	
+						} else {
+							parsingSubject = false;
+						}
 					}
 					break;
 			}
